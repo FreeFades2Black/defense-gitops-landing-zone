@@ -1,0 +1,93 @@
+# FILE: .github/workflows/revolver-pipeline.yml
+# LORE: The Gunslinger draws iron not with haste, but with precision.
+#       Every gate is a chamber: Lint, Scan, Cost, and Deploy.
+
+name: "gunslinger-precision-ci"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  chamber_one_lint_and_security:
+    name: "Chamber 1: Static Analysis & Security Gate"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Draw Iron (Checkout Repository)"
+        uses: actions/checkout@v4
+
+      - name: "Inspect Powder (Python Setup & Lint)"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: "Execute Ruff & Unit Tests"
+        run: |
+          pip install ruff mypy pytest
+          ruff check .
+          pytest tests/ -v
+
+      - name: "Sight Alignment (Trivy Vulnerability & IaC Scan)"
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+
+  chamber_two_checkov_iac_audit:
+    name: "Chamber 2: Checkov CIS IaC Benchmark Audit"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: "Run Checkov Security Audit"
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: "terraform/"
+          framework: "terraform"
+          soft_fail: true
+          output_format: "cli"
+
+  chamber_three_infracost:
+    name: "Chamber 3: Infracost Cost Projection"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: "Setup Infracost"
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      - name: "Generate Infracost Cost Diff"
+        run: |
+          infracost breakdown --path=terraform/ --format=json --out-file=/tmp/infracost.json || true
+          infracost diff --path=terraform/ --format=json --out-file=/tmp/infracost-diff.json || true
+
+  chamber_four_sbom_dossier:
+    name: "Chamber 4: Automated SBOM & Compliance Release Dossier"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: "Generate Security Release Dossier"
+        run: |
+          python scripts/generate_security_report.py
+
+      - name: "Upload Compliance Dossier Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: "security-release-dossier"
+          path: "SECURITY_RELEASE_DOSSIER.md"

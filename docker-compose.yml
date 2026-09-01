@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: defense_gitops_localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=eks,ec2,kms,iam,logs,s3
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./.localstack}:/var/lib/localstack"
+
+  hardened-service:
+    build:
+      context: .
+      dockerfile: src/app/Dockerfile
+    container_name: defense_hardened_app
+    read_only: true
+    user: "10001:10001"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
