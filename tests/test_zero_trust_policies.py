@@ -3,10 +3,8 @@ Defense-Grade DevSecOps Pipeline
 Test Suite for Zero-Trust Security Context, OPA Policies, and Security Report Generation.
 """
 
-import pytest
-import os
-from src.app.main import ZeroTrustSecurityContext, get_health_status
 from scripts.generate_security_report import generate_security_release_dossier
+from src.app.main import ZeroTrustSecurityContext, get_health_status
 
 
 def test_zero_trust_security_context():
