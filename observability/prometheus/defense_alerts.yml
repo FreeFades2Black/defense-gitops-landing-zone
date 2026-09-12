@@ -1,0 +1,22 @@
+groups:
+  - name: defense_landing_zone_alerts
+    rules:
+      - alert: IMDSv1CallDetected
+        expr: sum(rate(aws_ec2_imdsv1_calls_total[1m])) > 0
+        for: 0m
+        labels:
+          severity: critical
+          tier: compliance
+        annotations:
+          summary: "Insecure IMDSv1 call detected in GovCloud environment"
+          description: "An instance profile or pod made an unauthenticated IMDSv1 call violating NIST SP 800-53."
+
+      - alert: CloudTrailLoggingDisabled
+        expr: aws_cloudtrail_status{is_logging="false"} == 1
+        for: 1m
+        labels:
+          severity: critical
+          tier: security
+        annotations:
+          summary: "GovCloud CloudTrail audit trail stopped"
+          description: "Critical audit logging has stopped. Immediate investigation required."
