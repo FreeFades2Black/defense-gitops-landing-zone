@@ -1,26 +1,25 @@
-# 🛡️ Defense-Grade GitOps Landing Zone & DevSecOps Pipeline
-### *Hardened CIS Benchmark Kubernetes/ECS Infrastructure, OPA Zero-Trust Enforcement & 4-Chamber CI/CD Automation*
+# Defense-Grade GitOps Landing Zone & DevSecOps Pipeline
+### Hardened CIS Benchmark Kubernetes/ECS Infrastructure, OPA Zero-Trust Enforcement & Multi-Stage CI/CD Automation
 
-[![Gunslinger Precision CI Gate](https://github.com/FreeFades2Black/defense-gitops-landing-zone/actions/workflows/revolver-pipeline.yml/badge.svg)](https://github.com/FreeFades2Black/defense-gitops-landing-zone/actions/workflows/revolver-pipeline.yml)
+[![CI Gate](https://github.com/FreeFades2Black/defense-gitops-landing-zone/actions/workflows/revolver-pipeline.yml/badge.svg)](https://github.com/FreeFades2Black/defense-gitops-landing-zone/actions/workflows/revolver-pipeline.yml)
 [![PyTest Status](https://img.shields.io/badge/PyTest-100%25%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/FreeFades2Black/defense-gitops-landing-zone)
 [![Compliance Standards](https://img.shields.io/badge/Compliance-NIST%20800--53%20%7C%20CIS%20v1.8-blue?style=for-the-badge&logo=shield&logoColor=white)](https://github.com/FreeFades2Black/defense-gitops-landing-zone)
-[![Target Audience](https://img.shields.io/badge/Audience-HII%20Mission%20Tech%20%7C%20Nightwing%20%7C%20FinTech-purple?style=for-the-badge&logo=lockheed-martin&logoColor=white)](https://github.com/FreeFades2Black/defense-gitops-landing-zone)
 
 ---
 
-## 🎯 Executive Overview & Defense Mission
+## Architecture Overview & Operational Context
 
-Defense industrial base contractors (**HII Mission Technologies, Nightwing, Aerospace Systems**) and regulated enterprise FinTech organizations require verifiable zero-trust boundaries and automated compliance verification.
+Defense industrial base contractors and regulated enterprise environments require verifiable zero-trust boundaries and automated compliance verification.
 
-This repository provides an institutional **Defense-Grade GitOps Landing Zone & DevSecOps Pipeline** that automates:
+This repository provides a **Defense-Grade GitOps Landing Zone & DevSecOps Pipeline** that automates:
 1. **CIS Benchmark Hardened Infrastructure:** OpenTofu / Terraform landing zone provisioning private-only EKS/ECS clusters, customer-managed KMS envelope encryption for Kubernetes secrets, and encrypted VPC Flow Logs.
 2. **Zero-Trust OPA / Rego Admission Gates:** Strict policy-as-code preventing root containers, privilege escalation, hostPath volume mounts, and missing resource limits.
-3. **The 4-Chamber Gunslinger CI/CD Pipeline:** Multi-gate automated pull request review executing SAST, container vulnerability analysis (Trivy), IaC benchmark auditing (Checkov), and financial cloud spend tracking (Infracost).
+3. **Multi-Stage DevSecOps Pipeline:** Automated pull request review executing SAST, container vulnerability analysis (Trivy), IaC benchmark auditing (Checkov), and financial cloud spend tracking (Infracost).
 4. **Automated SBOM & Security Release Dossiers:** Automated generation of NIST SP 800-53 compliance dossiers and CycloneDX/SPDX software bills of materials.
 
 ---
 
-## 🏛️ Zero-Trust Architecture & Network Boundary
+## Zero-Trust Architecture & Network Isolation
 
 ```mermaid
 flowchart TD
@@ -46,11 +45,11 @@ flowchart TD
         C5["DoD Cloud: Strict CPU/Memory Limits"]
     end
 
-    subgraph S4["4. The 4-Chamber DevSecOps Pipeline"]
-        D1["Chamber 1: SAST & Trivy Container Scan"]
-        D2["Chamber 2: Checkov CIS IaC Audit"]
-        D3["Chamber 3: Infracost PR Spend Projection"]
-        D4["Chamber 4: Automated SBOM & Security Dossier"]
+    subgraph S4["4. DevSecOps Pipeline Stages"]
+        D1["Stage 1: SAST & Trivy Container Scan"]
+        D2["Stage 2: Checkov CIS IaC Audit"]
+        D3["Stage 3: Infracost PR Spend Projection"]
+        D4["Stage 4: Automated SBOM & Security Dossier"]
     end
 
     S1 --> S2
@@ -66,14 +65,42 @@ flowchart TD
 
 ---
 
-## 🔐 The 4-Chamber CI/CD Automation Blueprint
+## Build Verification & Concrete Test Artifacts
+
+Zero-trust admission rules and policy enforcement are validated via automated pytest:
+
+```text
+============================= test session starts =============================
+platform win32 -- Python 3.11.0, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\FreeF\projects\defense-gitops-landing-zone
+plugins: anyio-4.14.2
+collected 3 items
+
+tests\test_zero_trust_policies.py ...                                    [100%]
+
+============================== 3 passed in 0.05s ==============================
+```
+
+### Verified Operational Edge Cases & Engineering Trade-Offs
+
+1. **IMDSv2 Token Hop Limit Enforcement (`http_put_response_hop_limit = 1`):**
+   - *Security Requirement:* Enforcing IMDSv2 with a single hop prevents Server-Side Request Forgery (SSRF) vulnerabilities from extracting EC2 instance profile IAM tokens from inside container pods.
+   - *Trade-off:* Workload pods cannot access node-level IAM credentials. Workloads requiring AWS service access must use IAM Roles for Service Accounts (IRSA) with projected WebIdentity tokens.
+2. **Strict Non-Root Admission vs. Third-Party Monitoring Daemonsets:**
+   - *Challenge:* CIS Benchmark 5.2.6 denies containers running as root (`RunAsNonRoot = false`), which blocks legitimate monitoring daemonsets (e.g. node-exporter, eBPF collectors) that require root network namespaces.
+   - *Resolution:* Implemented namespace-scoped policy exemptions in OPA Rego: workloads in application namespaces are strictly denied, while system daemonsets in `kube-system` require explicit cryptographically signed waiver tags.
+3. **Fully Private EKS Control Plane Peering:**
+   - *Trade-off:* Disabling the public endpoint (`endpoint_public_access = false`) guarantees zero exposure on the public internet, but prevents direct CI/CD kubectl executions from standard cloud runners. CI/CD runs via self-hosted ephemeral runners inside the private management VPC.
+
+---
+
+## Multi-Stage CI/CD Security Pipeline
 
 ```yaml
 # FILE: .github/workflows/revolver-pipeline.yml
-# LORE: The Gunslinger draws iron not with haste, but with precision.
-#       Every gate is a chamber: Lint, Scan, Cost, and Deploy.
+# Multi-stage automated DevSecOps validation pipeline
 
-name: "gunslinger-precision-ci"
+name: "defense-precision-ci"
 
 on:
   push:
@@ -82,23 +109,23 @@ on:
     branches: [ "main" ]
 
 jobs:
-  chamber_one_lint_and_security:
-    name: "Chamber 1: Static Analysis & Security Gate"
+  stage_one_lint_and_security:
+    name: "Stage 1: Static Analysis & Security Gate"
     runs-on: ubuntu-latest
     steps:
-      - name: "Draw Iron (Checkout Repository)"
+      - name: "Checkout Repository"
         uses: actions/checkout@v4
       - name: "Execute Ruff & Type Checks"
         run: pip install ruff mypy pytest && ruff check . && pytest tests/ -v
-      - name: "Sight Alignment (Trivy Vulnerability & IaC Scan)"
+      - name: "Trivy Vulnerability & IaC Scan"
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: "fs"
           scan-ref: "."
           severity: "CRITICAL,HIGH"
 
-  chamber_two_checkov_iac_audit:
-    name: "Chamber 2: Checkov CIS IaC Benchmark Audit"
+  stage_two_checkov_iac_audit:
+    name: "Stage 2: Checkov CIS IaC Benchmark Audit"
     runs-on: ubuntu-latest
     steps:
       - name: "Run Checkov Security Audit"
@@ -106,16 +133,16 @@ jobs:
         with:
           directory: "terraform/"
 
-  chamber_three_infracost:
-    name: "Chamber 3: Infracost Cost Projection"
+  stage_three_infracost:
+    name: "Stage 3: Infracost Cost Projection"
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: "Generate Infracost Cost Diff"
         run: infracost diff --path=terraform/
 
-  chamber_four_sbom_dossier:
-    name: "Chamber 4: Automated SBOM & Compliance Release Dossier"
+  stage_four_sbom_dossier:
+    name: "Stage 4: Automated SBOM & Compliance Release Dossier"
     runs-on: ubuntu-latest
     steps:
       - name: "Generate Security Release Dossier"
@@ -124,20 +151,20 @@ jobs:
 
 ---
 
-## 🚀 2-Minute Local Sandbox Quickstart
+## Quickstart & Local Execution
 
 ```bash
-# 1. Clone the repository
+# 1. Clone repository
 git clone https://github.com/FreeFades2Black/defense-gitops-landing-zone.git
 cd defense-gitops-landing-zone
 
 # 2. Initialize dependencies
 make init
 
-# 3. Execute PyTest test suite (100% pass rate)
+# 3. Execute test suite
 make test
 
-# 4. Generate NIST SP 800-53 Compliance Security Dossier
+# 4. Generate NIST SP 800-53 compliance dossier
 make dossier
 
 # 5. Validate Terraform landing zone
@@ -146,7 +173,7 @@ make plan
 
 ---
 
-## ⚖️ License & Attribution
+## License & Attribution
 
 * **License:** MIT Open Source
 * **Lead Architect:** Free (`FreeFades2Black`)
