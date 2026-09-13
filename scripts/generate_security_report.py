@@ -4,10 +4,7 @@ Automated Markdown Security Release Dossier & SBOM Generator.
 Synthesizes SAST (Ruff/MyPy), Container Vulnerabilities (Trivy), and IaC Audits (Checkov).
 """
 
-import json
-import os
 from datetime import datetime, timezone
-from pathlib import Path
 
 
 def generate_security_release_dossier(output_path: str = "SECURITY_RELEASE_DOSSIER.md") -> str:
