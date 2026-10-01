@@ -14,6 +14,7 @@ jobs:
   chamber_one_lint_and_security:
     name: "Chamber 1: Static Analysis & Security Gate"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Draw Iron (Checkout Repository)"
         uses: actions/checkout@v7
@@ -40,6 +41,7 @@ jobs:
   chamber_two_checkov_iac_audit:
     name: "Chamber 2: Checkov CIS IaC Benchmark Audit"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Checkout Code"
         uses: actions/checkout@v7
@@ -56,6 +58,7 @@ jobs:
     name: "Chamber 3: Infracost Cost Projection"
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Checkout Code"
         uses: actions/checkout@v7
@@ -73,6 +76,7 @@ jobs:
   chamber_four_sbom_dossier:
     name: "Chamber 4: Automated SBOM & Compliance Release Dossier"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Checkout Code"
         uses: actions/checkout@v7
