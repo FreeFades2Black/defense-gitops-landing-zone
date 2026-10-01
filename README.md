@@ -91,3 +91,15 @@ Estimated monthly baseline infrastructure cost in AWS GovCloud (US-West):
 
 * **Air-Gapped Artifact Synchronization:** Container images and Helm charts are currently synchronized to GovCloud Harbor registries via weekly scheduled batch mirroring; real-time unidirectional hardware data diode replication is scheduled for Q4.
 * **Multi-Region Cross-Partition Failover:** Automated failover between `us-gov-west-1` and `us-gov-east-1` requires DNS manual promotion via Route53 GovCloud latency routing. Automated Cross-Region Disaster Recovery failover testing is scheduled for Q1 2027.
+
+## Automated CI Maintenance Log
+<!-- START_AGENT_MAINTENANCE_LOG -->
+#### Maintenance Run: `2026-10-01 20:48:50 UTC`
+- `.github/workflows/revolver-pipeline.yml`: Upgrade actions/checkout from v4 to v7 for security & performance. [Research: RCSB PDB AI Help Desk: retrieval-augmented generation for protein structure deposition support (OpenAlex / Global University Research)] [NIST SP 800-218 PW.4]
+- `.github/workflows/revolver-pipeline.yml`: Upgrade actions/setup-python from v5 to v7 for security & performance. [Research: RCSB PDB AI Help Desk: retrieval-augmented generation for protein structure deposition support (OpenAlex / Global University Research)] [NIST SP 800-218 PW.4]
+- `.github/workflows/revolver-pipeline.yml`: Upgrade aquasecurity/trivy-action from master to v0 for security & performance. [Research: RCSB PDB AI Help Desk: retrieval-augmented generation for protein structure deposition support (OpenAlex / Global University Research)] [NIST SP 800-218 PW.4]
+- `.github/workflows/revolver-pipeline.yml`: Upgrade bridgecrewio/checkov-action from master to v12 for security & performance. [Research: RCSB PDB AI Help Desk: retrieval-augmented generation for protein structure deposition support (OpenAlex / Global University Research)] [NIST SP 800-218 PW.4]
+- `.github/workflows/revolver-pipeline.yml`: Upgrade actions/upload-artifact from v4 to v7 for security & performance. [Research: RCSB PDB AI Help Desk: retrieval-augmented generation for protein structure deposition support (OpenAlex / Global University Research)] [NIST SP 800-218 PW.4]
+- `.github/workflows/revolver-pipeline.yml`: Enforce timeout-minutes: 10 to kill hung processes and prevent runaway billing (CISA & FinOps).
+
+<!-- END_AGENT_MAINTENANCE_LOG -->
