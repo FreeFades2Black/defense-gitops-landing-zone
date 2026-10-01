@@ -14,12 +14,13 @@ jobs:
   chamber_one_lint_and_security:
     name: "Chamber 1: Static Analysis & Security Gate"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Draw Iron (Checkout Repository)"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Inspect Powder (Python Setup & Lint)"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       
@@ -30,7 +31,7 @@ jobs:
           pytest tests/ -v
 
       - name: "Sight Alignment (Trivy Vulnerability & IaC Scan)"
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0
         with:
           scan-type: "fs"
           scan-ref: "."
@@ -40,12 +41,13 @@ jobs:
   chamber_two_checkov_iac_audit:
     name: "Chamber 2: Checkov CIS IaC Benchmark Audit"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Checkout Code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Run Checkov Security Audit"
-        uses: bridgecrewio/checkov-action@master
+        uses: bridgecrewio/checkov-action@v12
         with:
           directory: "terraform/"
           framework: "terraform"
@@ -56,9 +58,10 @@ jobs:
     name: "Chamber 3: Infracost Cost Projection"
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Checkout Code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Setup Infracost"
         uses: infracost/actions/setup@v3
@@ -73,12 +76,13 @@ jobs:
   chamber_four_sbom_dossier:
     name: "Chamber 4: Automated SBOM & Compliance Release Dossier"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: "Checkout Code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Setup Python"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
@@ -87,7 +91,7 @@ jobs:
           python scripts/generate_security_report.py
 
       - name: "Upload Compliance Dossier Artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "security-release-dossier"
           path: "SECURITY_RELEASE_DOSSIER.md"
