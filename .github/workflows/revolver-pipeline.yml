@@ -87,7 +87,7 @@ jobs:
           python scripts/generate_security_report.py
 
       - name: "Upload Compliance Dossier Artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "security-release-dossier"
           path: "SECURITY_RELEASE_DOSSIER.md"
