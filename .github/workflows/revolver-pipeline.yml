@@ -30,7 +30,7 @@ jobs:
           pytest tests/ -v
 
       - name: "Sight Alignment (Trivy Vulnerability & IaC Scan)"
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0
         with:
           scan-type: "fs"
           scan-ref: "."
