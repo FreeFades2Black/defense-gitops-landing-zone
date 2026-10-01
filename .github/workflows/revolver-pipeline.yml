@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Draw Iron (Checkout Repository)"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Inspect Powder (Python Setup & Lint)"
         uses: actions/setup-python@v5
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout Code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Run Checkov Security Audit"
         uses: bridgecrewio/checkov-action@master
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout Code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Setup Infracost"
         uses: infracost/actions/setup@v3
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout Code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Setup Python"
         uses: actions/setup-python@v5
